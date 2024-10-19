@@ -18,7 +18,8 @@ const InvoicesPage: React.FC = () => {
   });
 
   const { address } = useAccount();
-  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables } = useInvoiceUtils();
+  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables, createInvoice } =
+    useInvoiceUtils();
 
   useEffect(() => {
     if (address) {
@@ -63,9 +64,20 @@ const InvoicesPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement createInvoice functionality
-    setIsModalOpen(false);
-    fetchInvoices(); // Refresh the invoice list
+    try {
+      await createInvoice(
+        invoiceData.payer,
+        invoiceData.amount,
+        invoiceData.description,
+        invoiceData.currency,
+        invoiceData.paymentTerms,
+      );
+      setIsModalOpen(false);
+      fetchInvoices(); // Refresh the invoice list
+    } catch (error) {
+      console.error("Failed to create invoice:", error);
+      // Handle error (e.g., show error message)
+    }
   };
 
   return (
@@ -128,9 +140,9 @@ const InvoicesPage: React.FC = () => {
       <CreateInvoiceModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        invoiceData={invoiceData}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
+        onSubmit={handleSubmit}
+        onChange={handleInputChange}
+        initialData={invoiceData}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     InvoiceNFT: {
-      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+      address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
       abi: [
         {
           inputs: [
@@ -317,11 +317,6 @@ const deployedContracts = {
         },
         {
           inputs: [
-            {
-              internalType: "address payable",
-              name: "_payee",
-              type: "address",
-            },
             {
               internalType: "address",
               name: "_payer",

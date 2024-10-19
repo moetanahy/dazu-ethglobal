@@ -1,7 +1,8 @@
 // InvoiceUtils.ts
 //useScaffoldWriteContract
+import { parseEther } from "viem";
 import { useAccount } from "wagmi";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export interface Invoice {
   payee: string;
@@ -37,6 +38,33 @@ export const useInvoiceUtils = () => {
     functionName: "getPayablesAndReceivablesFor",
     args: [address],
   });
+
+  const { writeContractAsync: createInvoiceWrite, isPending: isCreatingInvoice } =
+    useScaffoldWriteContract("InvoiceNFT");
+
+  const createInvoice = async (
+    payer: string,
+    amount: string,
+    description: string,
+    currencyCode: string,
+    paymentTerms: number,
+  ) => {
+    if (!address) {
+      throw new Error("Wallet not connected");
+    }
+
+    try {
+      const amountInWei = parseEther(amount);
+      const tx = await createInvoiceWrite({
+        functionName: "createInvoice",
+        args: [payer, amountInWei, description, currencyCode, BigInt(paymentTerms)],
+      });
+      return tx;
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      throw error;
+    }
+  };
 
   const retrievePayableInvoices = () => {
     if (isLoadingPayables || !address) {
@@ -76,5 +104,7 @@ export const useInvoiceUtils = () => {
     retrievePayableInvoices,
     retrieveReceivableInvoices,
     getPayablesAndReceivables,
+    createInvoice,
+    isCreatingInvoice,
   };
 };

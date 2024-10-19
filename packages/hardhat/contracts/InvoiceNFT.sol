@@ -35,15 +35,16 @@ contract InvoiceNFT is ERC721, Ownable {
 
     // Function to create an invoice and mint an NFT
     function createInvoice(
-        address payable _payee,
         address _payer,
         uint256 _amount,
         string memory _description,
         string memory _currencyCode,
         uint256 _paymentTerms
-    ) public onlyOwner returns (uint256) {
+    ) public returns (uint256) {
         // Validate payment terms
         require(_paymentTerms == 5 || _paymentTerms == 30 || _paymentTerms == 45, "Invalid payment terms");
+        // Ensure the payer is not the same as the payee (msg.sender)
+        require(_payer != msg.sender, "Cannot create an invoice to yourself");
 
         // Increment invoice ID manually
         _invoiceIds += 1;
@@ -58,7 +59,7 @@ contract InvoiceNFT is ERC721, Ownable {
 
         // Store invoice details in the mapping
         invoices[newInvoiceId] = Invoice({
-            payee: _payee,
+            payee: payable(msg.sender),
             payer: _payer,
             amount: _amount,
             paid: false,
@@ -72,7 +73,7 @@ contract InvoiceNFT is ERC721, Ownable {
         });
 
         // Add invoice ID to both payee's and payer's walletInvoices
-        walletInvoices[_payee].push(newInvoiceId);
+        walletInvoices[msg.sender].push(newInvoiceId);
         walletInvoices[_payer].push(newInvoiceId);
 
         return newInvoiceId;

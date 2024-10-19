@@ -5,24 +5,27 @@ import { paymentTerms } from "~~/utils/PaymentTermsUtils";
 interface CreateInvoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  invoiceData: {
+  onSubmit: (e: React.FormEvent) => Promise<void>;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  initialData: {
     payer: string;
     amount: string;
     currency: string;
     paymentTerms: number;
+    description: string;
   };
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleSubmit: (e: React.FormEvent) => void;
 }
 
 const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
   isOpen,
   onClose,
-  invoiceData,
-  handleInputChange,
-  handleSubmit,
+  onSubmit,
+  onChange,
+  initialData,
 }) => {
+  const [invoiceData, setInvoiceData] = useState(initialData);
   const [payerError, setPayerError] = useState<string>("");
+  //   const { createInvoice } = useInvoiceUtils();
 
   if (!isOpen) return null;
 
@@ -36,14 +39,22 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
   };
 
   const handlePayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e);
-    validatePayer(e.target.value);
+    const { value } = e.target;
+    setInvoiceData(prev => ({ ...prev, payer: value }));
+    validatePayer(value);
+    onChange(e);
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setInvoiceData(prev => ({ ...prev, [name]: value }));
+    onChange(e);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!payerError) {
-      handleSubmit(e);
+      await onSubmit(e);
     }
   };
 
@@ -51,7 +62,7 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-gray-100 p-6 rounded-lg shadow-xl max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Create New Invoice</h2>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-2 text-gray-700">Payer (Ethereum Address)</label>
             <input
@@ -113,6 +124,17 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
                 </option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700">Description</label>
+            <input
+              type="text"
+              name="description"
+              value={invoiceData.description}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded text-gray-800 bg-white"
+              required
+            />
           </div>
           <div className="flex justify-end">
             <button type="button" className="btn btn-secondary mr-2" onClick={onClose}>
