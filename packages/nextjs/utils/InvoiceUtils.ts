@@ -52,17 +52,29 @@ export const useInvoiceUtils = () => {
     return { receivableInvoices: receivableInvoices as Invoice[], isLoading: false };
   };
 
-  const retrievePayablesAndReceivables = () => {
-    if (isLoadingPayablesAndReceivables || !address) {
+  const getPayablesAndReceivables = () => {
+    if (isLoadingPayablesAndReceivables || !address || !payablesAndReceivables) {
       return { payables: [], receivables: [], isLoading: true };
     }
-    const [payables, receivables] = payablesAndReceivables as [Invoice[], Invoice[]];
-    return { payables, receivables, isLoading: false };
+
+    // Check if payablesAndReceivables is an array with two elements
+    if (Array.isArray(payablesAndReceivables) && payablesAndReceivables.length === 2) {
+      const [payables, receivables] = payablesAndReceivables;
+      return {
+        payables: Array.isArray(payables) ? payables : [],
+        receivables: Array.isArray(receivables) ? receivables : [],
+        isLoading: false,
+      };
+    }
+
+    // If the data is not in the expected format, return empty arrays
+    console.error("Unexpected format for payablesAndReceivables:", payablesAndReceivables);
+    return { payables: [], receivables: [], isLoading: false };
   };
 
   return {
     retrievePayableInvoices,
     retrieveReceivableInvoices,
-    retrievePayablesAndReceivables,
+    getPayablesAndReceivables,
   };
 };

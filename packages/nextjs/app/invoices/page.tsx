@@ -18,7 +18,7 @@ const InvoicesPage: React.FC = () => {
   });
 
   const { address } = useAccount();
-  const { retrievePayableInvoices, retrieveReceivableInvoices, retrievePayablesAndReceivables } = useInvoiceUtils();
+  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables } = useInvoiceUtils();
 
   useEffect(() => {
     if (address) {
@@ -38,13 +38,20 @@ const InvoicesPage: React.FC = () => {
         ({ receivableInvoices: fetchedInvoices, isLoading } = retrieveReceivableInvoices());
         break;
       case "all":
-        const { payables, receivables, isLoading: allLoading } = retrievePayablesAndReceivables();
-        fetchedInvoices = [...payables, ...receivables];
-        isLoading = allLoading;
+        const result = getPayablesAndReceivables();
+        console.log("Raw result from getPayablesAndReceivables:", result);
+        if (result.payables && result.receivables) {
+          fetchedInvoices = [...result.payables, ...result.receivables];
+        } else {
+          console.error("Unexpected format from getPayablesAndReceivables:", result);
+          fetchedInvoices = [];
+        }
+        isLoading = result.isLoading;
         break;
     }
 
     if (!isLoading) {
+      console.log("Fetched invoices:", fetchedInvoices);
       setInvoices(fetchedInvoices);
     }
   };
