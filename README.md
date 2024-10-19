@@ -20,6 +20,12 @@ The goal of this project is to create a business invoicing platform that allows 
 - Walrus (for data storage)
 - Chronicle for real exchange rates
 
+## Smart Contracts
+
+I need smart contracts for:
+* InvoiceManager
+* 
+
 
 ## Quickstart
 

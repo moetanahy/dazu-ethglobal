@@ -1883,6 +1883,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prb/math@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@prb/math@npm:4.0.3"
+  checksum: f8319b9eb0fd9d2089bd785c2d9468d9fbd04de903ea342461e3ccecda8ee1144f21c3641f5f3a422544a329ff66e410e5e83aa38f8de95e6e3baa410a9d21d8
+  languageName: node
+  linkType: hard
+
 "@rainbow-me/rainbowkit@npm:2.1.0":
   version: 2.1.0
   resolution: "@rainbow-me/rainbowkit@npm:2.1.0"
@@ -2078,6 +2085,7 @@ __metadata:
     "@nomicfoundation/hardhat-network-helpers": ~1.0.11
     "@nomicfoundation/hardhat-verify": ~2.0.10
     "@openzeppelin/contracts": ^5.1.0
+    "@prb/math": ^4.0.3
     "@typechain/ethers-v5": ~11.1.2
     "@typechain/ethers-v6": ~0.5.1
     "@typechain/hardhat": ~9.1.0
