@@ -17,7 +17,9 @@ contract InvoiceNFT is ERC721, Ownable {
         string description;
         string currencyCode;
         uint256 paymentTerms;
-        uint256 creationDate; // New field for creation date
+        uint256 creationDate;
+        uint256 dueDate;
+        uint256 paidDate; // New field for paid date
     }
 
     // Mapping from tokenId to Invoice data
@@ -44,6 +46,10 @@ contract InvoiceNFT is ERC721, Ownable {
         // Mint the NFT to the payer
         _mint(_payer, newInvoiceId);
 
+        // Calculate the due date
+        uint256 creationDate = block.timestamp;
+        uint256 dueDate = creationDate + (_paymentTerms * 1 days);
+
         // Store invoice details in the mapping
         invoices[newInvoiceId] = Invoice({
             payee: _payee,
@@ -53,7 +59,9 @@ contract InvoiceNFT is ERC721, Ownable {
             description: _description,
             currencyCode: _currencyCode,
             paymentTerms: _paymentTerms,
-            creationDate: block.timestamp // Set the creation date to the current block timestamp
+            creationDate: creationDate,
+            dueDate: dueDate,
+            paidDate: 0 // Initialize paidDate to 0
         });
 
         return newInvoiceId;
@@ -67,11 +75,30 @@ contract InvoiceNFT is ERC721, Ownable {
         require(!invoice.paid, "Invoice already paid.");
         require(msg.value >= invoice.amount, "Insufficient payment.");
 
-        // Mark the invoice as paid
+        // Mark the invoice as paid and set the paid date
         invoice.paid = true;
+        invoice.paidDate = block.timestamp;
 
         // Transfer the payment to the payee
         invoice.payee.transfer(msg.value);
+    }
+
+    // Function to check if an invoice is overdue
+    function isInvoiceOverdue(uint256 _invoiceId) public view returns (bool) {
+        Invoice storage invoice = invoices[_invoiceId];
+        return !invoice.paid && block.timestamp > invoice.dueDate;
+    }
+
+    // Function to get the payment status of an invoice
+    function getInvoiceStatus(uint256 _invoiceId) public view returns (string memory) {
+        Invoice storage invoice = invoices[_invoiceId];
+        if (invoice.paid) {
+            return "Paid";
+        } else if (block.timestamp > invoice.dueDate) {
+            return "Overdue";
+        } else {
+            return "Pending";
+        }
     }
 
     // Optional: Function to allow the NFT invoice to be transferred to another party
