@@ -11,6 +11,7 @@ contract InvoiceManager {
     }
 
     mapping(uint => Invoice) public invoices;
+    uint[] public invoiceIds;
     uint public nextInvoiceId;
 
     function createInvoice(address _payee, uint _amount, string memory _details) public {
@@ -25,5 +26,9 @@ contract InvoiceManager {
 
         invoice.paid = true;
         payable(invoice.payee).transfer(msg.value);
+    }
+
+    function getInvoices() public view returns (uint[] memory) {
+        return invoiceIds;
     }
 }
