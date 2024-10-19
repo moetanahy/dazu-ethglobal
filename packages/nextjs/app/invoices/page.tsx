@@ -1,77 +1,64 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
-
-type InvoiceType = "receivables" | "payables";
-
-interface Invoice {
-  id: string;
-  payer: string;
-  amount: string;
-  currency: string;
-  paymentTerms: number;
-  type: InvoiceType;
-  creationDate: number; // New field for creation date
-}
+import { Invoice, useInvoiceUtils } from "~~/utils/InvoiceUtils";
 
 const InvoicesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<InvoiceType | "all">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "receivable" | "payable">("all");
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [invoiceData, setInvoiceData] = useState({
     payer: "",
     amount: "",
     currency: "USD",
     paymentTerms: 30,
+    description: "",
   });
 
-  // Mock data for invoices
-  const [invoices, setInvoices] = useState<Invoice[]>([
-    {
-      id: "1",
-      payer: "0x1234...",
-      amount: "100",
-      currency: "USDC",
-      paymentTerms: 30,
-      type: "receivables",
-      creationDate: Date.now(),
-    },
-    {
-      id: "2",
-      payer: "0x5678...",
-      amount: "200",
-      currency: "ETH",
-      paymentTerms: 14,
-      type: "payables",
-      creationDate: Date.now() - 86400000,
-    }, // 1 day ago
-  ]);
+  const { address } = useAccount();
+  const { retrievePayableInvoices, retrieveReceivableInvoices, retrievePayablesAndReceivables } = useInvoiceUtils();
+
+  useEffect(() => {
+    if (address) {
+      fetchInvoices();
+    }
+  }, [address, activeTab]);
+
+  const fetchInvoices = () => {
+    let fetchedInvoices: Invoice[] = [];
+    let isLoading = false;
+
+    switch (activeTab) {
+      case "payable":
+        ({ payableInvoices: fetchedInvoices, isLoading } = retrievePayableInvoices());
+        break;
+      case "receivable":
+        ({ receivableInvoices: fetchedInvoices, isLoading } = retrieveReceivableInvoices());
+        break;
+      case "all":
+        const { payables, receivables, isLoading: allLoading } = retrievePayablesAndReceivables();
+        fetchedInvoices = [...payables, ...receivables];
+        isLoading = allLoading;
+        break;
+    }
+
+    if (!isLoading) {
+      setInvoices(fetchedInvoices);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setInvoiceData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newInvoice: Invoice = {
-      id: Date.now().toString(),
-      ...invoiceData,
-      type: "receivables", // Assuming new invoices are always receivables
-      creationDate: Date.now(), // Set the creation date to the current timestamp
-    };
-    setInvoices(prev => [...prev, newInvoice]);
+    // TODO: Implement createInvoice functionality
     setIsModalOpen(false);
-    // Here you would typically send the data to your backend or smart contract
-  };
-
-  const filteredInvoices = invoices.filter(invoice => {
-    if (activeTab === "all") return true;
-    return invoice.type === activeTab;
-  });
-
-  const getDisplayType = (type: InvoiceType) => {
-    return type === "receivables" ? "Sent" : "Received";
+    fetchInvoices(); // Refresh the invoice list
   };
 
   return (
@@ -88,13 +75,13 @@ const InvoicesPage: React.FC = () => {
           All
         </a>
         <a
-          className={`tab ${activeTab === "receivables" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("receivables")}
+          className={`tab ${activeTab === "receivable" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("receivable")}
         >
-          Sent
+          Receivable
         </a>
-        <a className={`tab ${activeTab === "payables" ? "tab-active" : ""}`} onClick={() => setActiveTab("payables")}>
-          Received
+        <a className={`tab ${activeTab === "payable" ? "tab-active" : ""}`} onClick={() => setActiveTab("payable")}>
+          Payable
         </a>
       </div>
 
@@ -102,25 +89,29 @@ const InvoicesPage: React.FC = () => {
         <table className="table w-full border-collapse">
           <thead>
             <tr>
-              <th className="px-4 py-2 text-left border-b">ID</th>
+              <th className="px-4 py-2 text-left border-b">Payee</th>
               <th className="px-4 py-2 text-left border-b">Payer</th>
               <th className="px-4 py-2 text-left border-b">Amount</th>
               <th className="px-4 py-2 text-left border-b">Currency</th>
               <th className="px-4 py-2 text-left border-b">Payment Terms</th>
-              <th className="px-4 py-2 text-left border-b">Type</th>
               <th className="px-4 py-2 text-left border-b">Creation Date</th>
+              <th className="px-4 py-2 text-left border-b">Due Date</th>
+              <th className="px-4 py-2 text-left border-b">Status</th>
             </tr>
           </thead>
           <tbody>
-            {filteredInvoices.map(invoice => (
-              <tr key={invoice.id} className="hover:bg-base-200">
-                <td className="px-4 py-2 border-b">{invoice.id}</td>
+            {invoices.map((invoice, index) => (
+              <tr key={index} className="hover:bg-base-200">
+                <td className="px-4 py-2 border-b">{invoice.payee}</td>
                 <td className="px-4 py-2 border-b">{invoice.payer}</td>
-                <td className="px-4 py-2 border-b">{invoice.amount}</td>
-                <td className="px-4 py-2 border-b">{invoice.currency}</td>
-                <td className="px-4 py-2 border-b">{invoice.paymentTerms} days</td>
-                <td className="px-4 py-2 border-b">{getDisplayType(invoice.type)}</td>
-                <td className="px-4 py-2 border-b">{new Date(invoice.creationDate).toLocaleDateString()}</td>
+                <td className="px-4 py-2 border-b">{invoice.amount.toString()}</td>
+                <td className="px-4 py-2 border-b">{invoice.currencyCode}</td>
+                <td className="px-4 py-2 border-b">{invoice.paymentTerms.toString()} days</td>
+                <td className="px-4 py-2 border-b">
+                  {new Date(Number(invoice.creationDate) * 1000).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 border-b">{new Date(Number(invoice.dueDate) * 1000).toLocaleDateString()}</td>
+                <td className="px-4 py-2 border-b">{invoice.paid ? "Paid" : "Pending"}</td>
               </tr>
             ))}
           </tbody>

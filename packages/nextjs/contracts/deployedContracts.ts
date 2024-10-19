@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     InvoiceNFT: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
       abi: [
         {
           inputs: [
@@ -260,6 +260,19 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "approveInvoice",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "address",
               name: "owner",
               type: "address",
@@ -274,6 +287,32 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "cancelInvoice",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "checkInvoiceStatus",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -297,6 +336,16 @@ const deployedContracts = {
               internalType: "string",
               name: "_description",
               type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_currencyCode",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "_paymentTerms",
+              type: "uint256",
             },
           ],
           name: "createInvoice",
@@ -324,6 +373,391 @@ const deployedContracts = {
               internalType: "address",
               name: "",
               type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "getInvoice",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address payable",
+                  name: "payee",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "paid",
+                  type: "bool",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "currencyCode",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paymentTerms",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "creationDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "dueDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paidDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum InvoiceNFT.InvoiceStatus",
+                  name: "status",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct InvoiceNFT.Invoice",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "getInvoiceStatus",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_wallet",
+              type: "address",
+            },
+          ],
+          name: "getPayableInvoicesFor",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address payable",
+                  name: "payee",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "paid",
+                  type: "bool",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "currencyCode",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paymentTerms",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "creationDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "dueDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paidDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum InvoiceNFT.InvoiceStatus",
+                  name: "status",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct InvoiceNFT.Invoice[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_wallet",
+              type: "address",
+            },
+          ],
+          name: "getPayablesAndReceivablesFor",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address payable",
+                  name: "payee",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "paid",
+                  type: "bool",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "currencyCode",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paymentTerms",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "creationDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "dueDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paidDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum InvoiceNFT.InvoiceStatus",
+                  name: "status",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct InvoiceNFT.Invoice[]",
+              name: "payables",
+              type: "tuple[]",
+            },
+            {
+              components: [
+                {
+                  internalType: "address payable",
+                  name: "payee",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "paid",
+                  type: "bool",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "currencyCode",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paymentTerms",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "creationDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "dueDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paidDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum InvoiceNFT.InvoiceStatus",
+                  name: "status",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct InvoiceNFT.Invoice[]",
+              name: "receivables",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_wallet",
+              type: "address",
+            },
+          ],
+          name: "getReceivableInvoicesFor",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "address payable",
+                  name: "payee",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "payer",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "bool",
+                  name: "paid",
+                  type: "bool",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "currencyCode",
+                  type: "string",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paymentTerms",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "creationDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "dueDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "paidDate",
+                  type: "uint256",
+                },
+                {
+                  internalType: "enum InvoiceNFT.InvoiceStatus",
+                  name: "status",
+                  type: "uint8",
+                },
+              ],
+              internalType: "struct InvoiceNFT.Invoice[]",
+              name: "",
+              type: "tuple[]",
             },
           ],
           stateMutability: "view",
@@ -364,6 +798,36 @@ const deployedContracts = {
               name: "description",
               type: "string",
             },
+            {
+              internalType: "string",
+              name: "currencyCode",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "paymentTerms",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "creationDate",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "dueDate",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "paidDate",
+              type: "uint256",
+            },
+            {
+              internalType: "enum InvoiceNFT.InvoiceStatus",
+              name: "status",
+              type: "uint8",
+            },
           ],
           stateMutability: "view",
           type: "function",
@@ -382,6 +846,25 @@ const deployedContracts = {
             },
           ],
           name: "isApprovedForAll",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "isInvoiceOverdue",
           outputs: [
             {
               internalType: "bool",
@@ -448,6 +931,19 @@ const deployedContracts = {
           name: "payInvoice",
           outputs: [],
           stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+          ],
+          name: "rejectInvoice",
+          outputs: [],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {

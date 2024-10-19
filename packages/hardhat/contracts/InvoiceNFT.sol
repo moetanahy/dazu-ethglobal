@@ -9,6 +9,8 @@ contract InvoiceNFT is ERC721, Ownable {
     // Manual counter for invoice IDs
     uint256 private _invoiceIds;
 
+    enum InvoiceStatus { Pending, Approved, Rejected, AutomaticallyApproved, Cancelled }
+
     struct Invoice {
         address payable payee;
         address payer;
@@ -19,11 +21,15 @@ contract InvoiceNFT is ERC721, Ownable {
         uint256 paymentTerms;
         uint256 creationDate;
         uint256 dueDate;
-        uint256 paidDate; // New field for paid date
+        uint256 paidDate;
+        InvoiceStatus status;
     }
 
     // Mapping from tokenId to Invoice data
     mapping(uint256 => Invoice) public invoices;
+
+    // Mapping from wallet address to an array of invoice IDs
+    mapping(address => uint256[]) private walletInvoices;
 
     constructor(address initialOwner) ERC721("InvoiceNFT", "INV") Ownable(initialOwner) {}
 
@@ -61,8 +67,13 @@ contract InvoiceNFT is ERC721, Ownable {
             paymentTerms: _paymentTerms,
             creationDate: creationDate,
             dueDate: dueDate,
-            paidDate: 0 // Initialize paidDate to 0
+            paidDate: 0,
+            status: InvoiceStatus.Pending
         });
+
+        // Add invoice ID to both payee's and payer's walletInvoices
+        walletInvoices[_payee].push(newInvoiceId);
+        walletInvoices[_payer].push(newInvoiceId);
 
         return newInvoiceId;
     }
@@ -74,6 +85,7 @@ contract InvoiceNFT is ERC721, Ownable {
         require(invoice.payer == msg.sender, "Only the payer can pay this invoice.");
         require(!invoice.paid, "Invoice already paid.");
         require(msg.value >= invoice.amount, "Insufficient payment.");
+        require(invoice.status == InvoiceStatus.Approved || invoice.status == InvoiceStatus.AutomaticallyApproved, "Invoice not approved.");
 
         // Mark the invoice as paid and set the paid date
         invoice.paid = true;
@@ -91,6 +103,10 @@ contract InvoiceNFT is ERC721, Ownable {
 
     // Function to get the payment status of an invoice
     function getInvoiceStatus(uint256 _invoiceId) public view returns (string memory) {
+        if (_invoiceId == 0 || _invoiceId > _invoiceIds) {
+            return "None";
+        }
+        
         Invoice storage invoice = invoices[_invoiceId];
         if (invoice.paid) {
             return "Paid";
@@ -112,4 +128,153 @@ contract InvoiceNFT is ERC721, Ownable {
         // Generate or fetch off-chain metadata URL for the invoice
         return "https://my-invoice-metadata.com/"; // Replace with your metadata link (e.g., IPFS or centralized URL)
     }    
+
+    // Function to get invoice from invoiceID
+    function getInvoice(uint256 _invoiceId) public view returns (Invoice memory) {
+        require(_invoiceId > 0 && _invoiceId <= _invoiceIds, "Invalid invoice ID");
+        return invoices[_invoiceId];
+    }
+
+    // Function to retrieve all payable invoices for a particular wallet
+    function getPayableInvoicesFor(address _wallet) public view returns (Invoice[] memory) {
+        uint256[] memory invoiceIds = walletInvoices[_wallet];
+        Invoice[] memory payableInvoices = new Invoice[](invoiceIds.length);
+        uint256 payableCount = 0;
+
+        for (uint256 i = 0; i < invoiceIds.length; i++) {
+            Invoice memory invoice = invoices[invoiceIds[i]];
+            if (invoice.payer == _wallet) {
+                payableInvoices[payableCount] = invoice;
+                payableCount++;
+            }
+        }
+
+        // Resize the array to remove empty slots
+        assembly {
+            mstore(payableInvoices, payableCount)
+        }
+
+        return payableInvoices;
+    }
+
+    // Function to retrieve all receivable invoices for a particular wallet
+    function getReceivableInvoicesFor(address _wallet) public view returns (Invoice[] memory) {
+        uint256[] memory invoiceIds = walletInvoices[_wallet];
+        Invoice[] memory receivableInvoices = new Invoice[](invoiceIds.length);
+        uint256 receivableCount = 0;
+
+        for (uint256 i = 0; i < invoiceIds.length; i++) {
+            Invoice memory invoice = invoices[invoiceIds[i]];
+            if (invoice.payee == _wallet) {
+                receivableInvoices[receivableCount] = invoice;
+                receivableCount++;
+            }
+        }
+
+        // Resize the array to remove empty slots
+        assembly {
+            mstore(receivableInvoices, receivableCount)
+        }
+
+        return receivableInvoices;
+    }
+
+    // Function to retrieve all payable and receivable invoices for a particular wallet
+    function getPayablesAndReceivablesFor(address _wallet) public view returns (Invoice[] memory payables, Invoice[] memory receivables) {
+        uint256[] memory invoiceIds = walletInvoices[_wallet];
+        Invoice[] memory payableInvoices = new Invoice[](invoiceIds.length);
+        Invoice[] memory receivableInvoices = new Invoice[](invoiceIds.length);
+        uint256 payableCount = 0;
+        uint256 receivableCount = 0;
+
+        for (uint256 i = 0; i < invoiceIds.length; i++) {
+            Invoice memory invoice = invoices[invoiceIds[i]];
+            if (invoice.payer == _wallet) {
+                payableInvoices[payableCount] = invoice;
+                payableCount++;
+            } else if (invoice.payee == _wallet) {
+                receivableInvoices[receivableCount] = invoice;
+                receivableCount++;
+            }
+        }
+
+        // Resize the arrays to remove empty slots
+        assembly {
+            mstore(payableInvoices, payableCount)
+            mstore(receivableInvoices, receivableCount)
+        }
+
+        return (payableInvoices, receivableInvoices);
+    }
+
+    // Function to approve an invoice
+    function approveInvoice(uint256 _invoiceId) public {
+        Invoice storage invoice = invoices[_invoiceId];
+        require(invoice.payer == msg.sender, "Only the payer can approve this invoice.");
+        require(invoice.status == InvoiceStatus.Pending, "Invoice is not in pending status.");
+        
+        uint256 approvalDeadline = invoice.creationDate + 7 days;
+        
+        if (block.timestamp <= approvalDeadline) {
+            invoice.status = InvoiceStatus.Approved;
+        } else {
+            invoice.status = InvoiceStatus.AutomaticallyApproved;
+        }
+    }
+
+    // Function to reject an invoice
+    function rejectInvoice(uint256 _invoiceId) public {
+        Invoice storage invoice = invoices[_invoiceId];
+        require(invoice.payer == msg.sender, "Only the payer can reject this invoice.");
+        require(invoice.status == InvoiceStatus.Pending, "Invoice is not in pending status.");
+        
+        uint256 approvalDeadline = invoice.creationDate + 7 days;
+        
+        if (block.timestamp <= approvalDeadline) {
+            invoice.status = InvoiceStatus.Rejected;
+        } else {
+            invoice.status = InvoiceStatus.AutomaticallyApproved;
+        }
+    }
+
+    // Function to check and update invoice status
+    function checkInvoiceStatus(uint256 _invoiceId) public {
+        Invoice storage invoice = invoices[_invoiceId];
+        require(invoice.status == InvoiceStatus.Pending, "Invoice is not in pending status.");
+        
+        uint256 approvalDeadline = invoice.creationDate + 7 days;
+        
+        if (block.timestamp > approvalDeadline) {
+            invoice.status = InvoiceStatus.AutomaticallyApproved;
+        }
+    }
+
+    // Function to allow a payee to cancel an invoice
+    function cancelInvoice(uint256 _invoiceId) public {
+        Invoice storage invoice = invoices[_invoiceId];
+        require(invoice.payee == msg.sender, "Only the payee can cancel this invoice.");
+        require(invoice.status == InvoiceStatus.Pending, "Invoice can only be cancelled if it's pending.");
+
+        invoice.status = InvoiceStatus.Cancelled;
+
+        // Burn the NFT
+        _burn(_invoiceId);
+
+        // Remove the invoice ID from both payee's and payer's walletInvoices
+        removeFromWalletInvoices(invoice.payee, _invoiceId);
+        removeFromWalletInvoices(invoice.payer, _invoiceId);
+    }
+
+    // TODO not sure I agree with this
+    // Helper function to remove an invoice ID from a wallet's invoice list
+    function removeFromWalletInvoices(address wallet, uint256 invoiceId) private {
+        uint256[] storage walletInvoiceIds = walletInvoices[wallet];
+        for (uint256 i = 0; i < walletInvoiceIds.length; i++) {
+            if (walletInvoiceIds[i] == invoiceId) {
+                walletInvoiceIds[i] = walletInvoiceIds[walletInvoiceIds.length - 1];
+                walletInvoiceIds.pop();
+                break;
+            }
+        }
+    }
 }
