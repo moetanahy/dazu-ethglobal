@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract InvoiceNFT is ERC721, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _invoiceIds; // Counter for NFT IDs
+
+    // Manual counter for invoice IDs
+    uint256 private _invoiceIds;
 
     struct Invoice {
         address payable payee;
@@ -20,7 +20,7 @@ contract InvoiceNFT is ERC721, Ownable {
     // Mapping from tokenId to Invoice data
     mapping(uint256 => Invoice) public invoices;
 
-    constructor() ERC721("InvoiceNFT", "INV") {}
+    constructor(address initialOwner) ERC721("InvoiceNFT", "INV") Ownable(initialOwner) {}
 
     // Function to create an invoice and mint an NFT
     function createInvoice(
@@ -29,8 +29,9 @@ contract InvoiceNFT is ERC721, Ownable {
         uint256 _amount,
         string memory _description
     ) public onlyOwner returns (uint256) {
-        _invoiceIds.increment();  // Increment invoice ID
-        uint256 newInvoiceId = _invoiceIds.current();  // Get current invoice ID
+        // Increment invoice ID manually
+        _invoiceIds += 1;
+        uint256 newInvoiceId = _invoiceIds;
 
         // Mint the NFT to the payer
         _mint(_payer, newInvoiceId);
@@ -72,5 +73,7 @@ contract InvoiceNFT is ERC721, Ownable {
     function tokenURI(uint256 _invoiceId) public view override returns (string memory) {
         // Generate or fetch off-chain metadata URL for the invoice
         return "https://my-invoice-metadata.com/"; // Replace with your metadata link (e.g., IPFS or centralized URL)
-    }
+    }    
+
+
 }
