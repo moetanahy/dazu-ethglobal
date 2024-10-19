@@ -12,6 +12,7 @@ interface Invoice {
   currency: string;
   paymentTerms: number;
   type: InvoiceType;
+  creationDate: number; // New field for creation date
 }
 
 const InvoicesPage: React.FC = () => {
@@ -26,9 +27,24 @@ const InvoicesPage: React.FC = () => {
 
   // Mock data for invoices
   const [invoices, setInvoices] = useState<Invoice[]>([
-    { id: "1", payer: "0x1234...", amount: "100", currency: "USDC", paymentTerms: 30, type: "receivables" },
-    { id: "2", payer: "0x5678...", amount: "200", currency: "ETH", paymentTerms: 14, type: "payables" },
-    // Add more mock invoices as needed
+    {
+      id: "1",
+      payer: "0x1234...",
+      amount: "100",
+      currency: "USDC",
+      paymentTerms: 30,
+      type: "receivables",
+      creationDate: Date.now(),
+    },
+    {
+      id: "2",
+      payer: "0x5678...",
+      amount: "200",
+      currency: "ETH",
+      paymentTerms: 14,
+      type: "payables",
+      creationDate: Date.now() - 86400000,
+    }, // 1 day ago
   ]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -42,6 +58,7 @@ const InvoicesPage: React.FC = () => {
       id: Date.now().toString(),
       ...invoiceData,
       type: "receivables", // Assuming new invoices are always receivables
+      creationDate: Date.now(), // Set the creation date to the current timestamp
     };
     setInvoices(prev => [...prev, newInvoice]);
     setIsModalOpen(false);
@@ -82,26 +99,28 @@ const InvoicesPage: React.FC = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="table w-full">
+        <table className="table w-full border-collapse">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Payer</th>
-              <th>Amount</th>
-              <th>Currency</th>
-              <th>Payment Terms</th>
-              <th>Type</th>
+              <th className="px-4 py-2 text-left border-b">ID</th>
+              <th className="px-4 py-2 text-left border-b">Payer</th>
+              <th className="px-4 py-2 text-left border-b">Amount</th>
+              <th className="px-4 py-2 text-left border-b">Currency</th>
+              <th className="px-4 py-2 text-left border-b">Payment Terms</th>
+              <th className="px-4 py-2 text-left border-b">Type</th>
+              <th className="px-4 py-2 text-left border-b">Creation Date</th>
             </tr>
           </thead>
           <tbody>
             {filteredInvoices.map(invoice => (
-              <tr key={invoice.id}>
-                <td>{invoice.id}</td>
-                <td>{invoice.payer}</td>
-                <td>{invoice.amount}</td>
-                <td>{invoice.currency}</td>
-                <td>{invoice.paymentTerms} days</td>
-                <td>{getDisplayType(invoice.type)}</td>
+              <tr key={invoice.id} className="hover:bg-base-200">
+                <td className="px-4 py-2 border-b">{invoice.id}</td>
+                <td className="px-4 py-2 border-b">{invoice.payer}</td>
+                <td className="px-4 py-2 border-b">{invoice.amount}</td>
+                <td className="px-4 py-2 border-b">{invoice.currency}</td>
+                <td className="px-4 py-2 border-b">{invoice.paymentTerms} days</td>
+                <td className="px-4 py-2 border-b">{getDisplayType(invoice.type)}</td>
+                <td className="px-4 py-2 border-b">{new Date(invoice.creationDate).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

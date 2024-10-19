@@ -15,6 +15,9 @@ contract InvoiceNFT is ERC721, Ownable {
         uint256 amount;
         bool paid;
         string description;
+        string currencyCode;
+        uint256 paymentTerms;
+        uint256 creationDate; // New field for creation date
     }
 
     // Mapping from tokenId to Invoice data
@@ -27,8 +30,13 @@ contract InvoiceNFT is ERC721, Ownable {
         address payable _payee,
         address _payer,
         uint256 _amount,
-        string memory _description
+        string memory _description,
+        string memory _currencyCode,
+        uint256 _paymentTerms
     ) public onlyOwner returns (uint256) {
+        // Validate payment terms
+        require(_paymentTerms == 5 || _paymentTerms == 30 || _paymentTerms == 45, "Invalid payment terms");
+
         // Increment invoice ID manually
         _invoiceIds += 1;
         uint256 newInvoiceId = _invoiceIds;
@@ -42,7 +50,10 @@ contract InvoiceNFT is ERC721, Ownable {
             payer: _payer,
             amount: _amount,
             paid: false,
-            description: _description
+            description: _description,
+            currencyCode: _currencyCode,
+            paymentTerms: _paymentTerms,
+            creationDate: block.timestamp // Set the creation date to the current block timestamp
         });
 
         return newInvoiceId;
@@ -74,6 +85,4 @@ contract InvoiceNFT is ERC721, Ownable {
         // Generate or fetch off-chain metadata URL for the invoice
         return "https://my-invoice-metadata.com/"; // Replace with your metadata link (e.g., IPFS or centralized URL)
     }    
-
-
 }
