@@ -92,16 +92,16 @@ const InvoicesPage: React.FC = () => {
 
       <div className="tabs tabs-boxed mb-4">
         <a className={`tab ${activeTab === "all" ? "tab-active" : ""}`} onClick={() => setActiveTab("all")}>
-          All
+          All Invoices
         </a>
         <a
           className={`tab ${activeTab === "receivable" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("receivable")}
         >
-          Receivable
+          Receivables
         </a>
         <a className={`tab ${activeTab === "payable" ? "tab-active" : ""}`} onClick={() => setActiveTab("payable")}>
-          Payable
+          Payables
         </a>
       </div>
 

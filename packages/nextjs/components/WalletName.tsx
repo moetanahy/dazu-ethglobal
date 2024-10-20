@@ -22,18 +22,14 @@ const WalletName: React.FC<WalletNameProps> = ({ address }) => {
   }, [address]);
 
   return (
-    <div
+    <span
       className="wallet-name"
       style={{
-        padding: "8px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        display: "inline-block",
         fontFamily: "monospace",
       }}
     >
       {displayName}
-    </div>
+    </span>
   );
 };
 
