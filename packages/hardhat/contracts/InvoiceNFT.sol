@@ -12,6 +12,7 @@ contract InvoiceNFT is ERC721, Ownable {
     enum InvoiceStatus { Pending, Approved, Rejected, AutomaticallyApproved, Cancelled }
 
     struct Invoice {
+        uint256 invoiceId;
         address payable payee;
         address payer;
         uint256 amount;
@@ -59,6 +60,7 @@ contract InvoiceNFT is ERC721, Ownable {
 
         // Store invoice details in the mapping
         invoices[newInvoiceId] = Invoice({
+            invoiceId: newInvoiceId,
             payee: payable(msg.sender),
             payer: _payer,
             amount: _amount,

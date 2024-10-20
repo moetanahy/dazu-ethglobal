@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export interface Invoice {
+  invoiceId: bigint | null;
   payee: string;
   payer: string;
   amount: bigint;

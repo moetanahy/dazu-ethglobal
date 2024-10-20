@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     InvoiceNFT: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      address: "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
       abi: [
         {
           inputs: [
@@ -386,6 +386,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -481,6 +486,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -557,6 +567,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -618,6 +633,11 @@ const deployedContracts = {
             },
             {
               components: [
+                {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
                 {
                   internalType: "address payable",
                   name: "payee",
@@ -695,6 +715,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -768,6 +793,11 @@ const deployedContracts = {
           ],
           name: "invoices",
           outputs: [
+            {
+              internalType: "uint256",
+              name: "invoiceId",
+              type: "uint256",
+            },
             {
               internalType: "address payable",
               name: "payee",
