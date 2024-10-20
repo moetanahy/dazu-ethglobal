@@ -5,10 +5,10 @@ The goal of this project is to create a business invoicing platform that allows 
 ## Tech Stack Plan
 
 - IDE/Plumbing
-	- https://scaffoldeth.io/
-	- Hardhat
+	- https://scaffoldeth.io/ **USED**
+	- Hardhat - **USED**
 - Dynamic for Wallets? (or am I using the Circle Wallet SDK)
-	- https://www.dynamic.xyz/
+	- https://www.dynamic.xyz/ - **INTEGRATED**
 - ENS for name service
 	- https://ens.domains/
 	- https://docs.ens.domains/web/subdomains

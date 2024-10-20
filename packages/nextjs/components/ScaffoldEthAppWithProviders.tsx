@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 // import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { DynamicContextProvider, mergeNetworks } from "@dynamic-labs/sdk-react-core";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 // this is on there
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,6 +16,8 @@ import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 // import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { useInitializeNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
+import { customEvmNetworks } from "~~/lib/networks";
+import scaffoldConfig from "~~/scaffold.config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 /* eslint-disable no-unused-vars */
@@ -40,23 +42,24 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 /* eslint-disable no-unused-vars */
 
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable no-unused-vars */
+const evmNetworks = [
+  ...scaffoldConfig.targetNetworks.map(chain => ({
+    blockExplorerUrls: chain.blockExplorers
+      ? Object.values(chain.blockExplorers as any).map(({ url }: any) => url)
+      : [],
+    chainId: chain.id,
+    name: chain.name,
+    rpcUrls: Object.values(chain.rpcUrls).map(({ http }) => http[0]),
+    iconUrls: [
+      chain.name === "Hardhat"
+        ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz4i1wWF516fnkizp1WSDG5rnG8GfkQAVoVQ&s"
+        : "",
+    ],
+    nativeCurrency: chain.nativeCurrency,
+    networkId: chain.id,
+  })),
+  ...customEvmNetworks,
+];
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   useInitializeNativeCurrencyPrice();
@@ -100,6 +103,9 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
       settings={{
         environmentId: "66da7136-0b0b-4e43-83c9-bcaa25f8b98b",
         walletConnectors: [EthereumWalletConnectors],
+        overrides: {
+          evmNetworks: networks => mergeNetworks(evmNetworks, networks),
+        },
       }}
     >
       <WagmiProvider config={wagmiConfig}>
