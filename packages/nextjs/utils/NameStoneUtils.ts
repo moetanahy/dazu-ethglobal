@@ -10,6 +10,7 @@ class NameStoneUtils {
   private static debugArray: { [address: string]: string } = {
     "0xf75F4b46a43baF67e3c4DC27b89472a54E4f3aBE": "user1",
     "0xCB9b60B895fB14c940A8352289C5374829300548": "user2",
+    "0x75f755B5B0ce1b15eeDc118B6Fe79d4f3DeD6De2": "user3",
   };
 
   //   private static NAME_STONE = new NameStone("037f4da9-82e7-43e1-a338-46c40d1fd715");
