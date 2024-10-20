@@ -145,7 +145,7 @@ class NameStoneUtils {
     }
   }
 
-  public static async getAllNames(): Promise<string | null> {
+  public static async getAllNames(): Promise<Array<{ name: string; address: string }> | null> {
     console.log("getAllNames");
 
     try {
@@ -161,14 +161,16 @@ class NameStoneUtils {
 
       console.log("response", response);
 
-      if (response.status === 200) {
-        console.log("response.data", response.data);
-        return response.data;
+      if (response.status === 200 && Array.isArray(response.data)) {
+        return response.data.map((item: any) => ({
+          name: item.name,
+          address: item.address,
+        }));
       }
 
       return null;
     } catch (error) {
-      console.error("Error getting name:", error);
+      console.error("Error getting names:", error);
       return null;
     }
   }
