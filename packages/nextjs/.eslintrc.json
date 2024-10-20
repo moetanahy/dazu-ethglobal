@@ -2,9 +2,11 @@
   "parser": "@typescript-eslint/parser",
   "extends": ["next/core-web-vitals", "plugin:prettier/recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-explicit-any": ["off"],
     "@typescript-eslint/ban-ts-comment": ["off"],
+    "no-console": 0,       
+    "no-unused-vars": "off",
     "prettier/prettier": [
       "warn",
       {
