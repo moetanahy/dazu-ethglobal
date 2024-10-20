@@ -1,8 +1,12 @@
+// import NameStone from "namestone-sdk";
 import axios from "axios";
 
 class NameStoneUtils {
+  private static DOMAIN = "dazupay.eth";
   private static API_KEY = "037f4da9-82e7-43e1-a338-46c40d1fd715";
-  private static BASE_URL = "https://api.namestone.xyz/v1";
+  private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
+
+  //   private static NAME_STONE = new NameStone("037f4da9-82e7-43e1-a338-46c40d1fd715");
 
   /**
    * Sets the name of the logged-in user in NameStone
@@ -13,15 +17,16 @@ class NameStoneUtils {
   public static async setName(address: string, name: string): Promise<boolean> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/set_name`,
+        `${this.BASE_URL}/set-name`,
         {
-          address,
-          name,
+          domain: this.DOMAIN,
+          name: name,
+          address: address,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            "X-API-Key": this.API_KEY,
+            Authorization: this.API_KEY,
           },
         },
       );
@@ -40,10 +45,14 @@ class NameStoneUtils {
    */
   public static async searchName(address: string): Promise<string | null> {
     try {
-      const response = await axios.get(`${this.BASE_URL}/search_name`, {
-        params: { address },
+      const response = await axios.get(`${this.BASE_URL}/get-names`, {
+        params: {
+          domain: this.DOMAIN,
+          address: address,
+        },
         headers: {
           "X-API-Key": this.API_KEY,
+          Authorization: this.API_KEY,
         },
       });
 
