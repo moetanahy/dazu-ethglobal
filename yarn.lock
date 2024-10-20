@@ -3980,6 +3980,7 @@ __metadata:
     "@uniswap/v2-sdk": ~3.0.1
     abitype: 1.0.6
     autoprefixer: ~10.4.20
+    axios: ^1.7.7
     blo: ~1.0.1
     burner-connector: ~0.0.8
     daisyui: 4.12.10
@@ -3987,6 +3988,7 @@ __metadata:
     eslint-config-next: ~14.0.4
     eslint-config-prettier: ~8.5.0
     eslint-plugin-prettier: ~4.2.1
+    namestone-sdk: ^0.2.8
     next: ~14.2.11
     next-nprogress-bar: ~2.3.13
     next-themes: ~0.3.0
@@ -6785,7 +6787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.7":
+"axios@npm:^1.6.7, axios@npm:^1.7.7":
   version: 1.7.7
   resolution: "axios@npm:1.7.7"
   dependencies:
@@ -13620,6 +13622,13 @@ __metadata:
     object-assign: ^4.0.1
     thenify-all: ^1.0.0
   checksum: 8427de0ece99a07e9faed3c0c6778820d7543e3776f9a84d22cf0ec0a8eb65f6e9aee9c9d353ff9a105ff62d33a9463c6ca638974cc652ee8140cd1e35951c87
+  languageName: node
+  linkType: hard
+
+"namestone-sdk@npm:^0.2.8":
+  version: 0.2.8
+  resolution: "namestone-sdk@npm:0.2.8"
+  checksum: f8fbde7f1ac2b2df204f0f2546dcfc109dccd717667e388b533d6722c70479ddde5dad4bca8fabb1bdf679e1157de50915389e83537b0b4283f6309091cbd99b
   languageName: node
   linkType: hard
 

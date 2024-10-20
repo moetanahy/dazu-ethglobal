@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+import WalletName from "~~/components/WalletName";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
 import { Invoice, useInvoiceUtils } from "~~/utils/InvoiceUtils";
 
@@ -121,8 +122,12 @@ const InvoicesPage: React.FC = () => {
           <tbody>
             {invoices.map((invoice, index) => (
               <tr key={index} className="hover:bg-base-200">
-                <td className="px-4 py-2 border-b">{invoice.payee}</td>
-                <td className="px-4 py-2 border-b">{invoice.payer}</td>
+                <td className="px-4 py-2 border-b">
+                  <WalletName address={invoice.payee} />
+                </td>
+                <td className="px-4 py-2 border-b">
+                  <WalletName address={invoice.payer} />
+                </td>
                 <td className="px-4 py-2 border-b">{invoice.amount.toString()}</td>
                 <td className="px-4 py-2 border-b">{invoice.currencyCode}</td>
                 <td className="px-4 py-2 border-b">{invoice.paymentTerms.toString()} days</td>
