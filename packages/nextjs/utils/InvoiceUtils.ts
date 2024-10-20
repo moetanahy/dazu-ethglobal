@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export interface Invoice {
-  invoiceId: bigint | null;
+  invoiceId: bigint;
   payee: string;
   payer: string;
   amount: bigint;
@@ -17,6 +17,7 @@ export interface Invoice {
   dueDate: bigint;
   paidDate: bigint;
   status: number;
+  blobId: string; // Add this field to match the returned data
 }
 
 export const useInvoiceUtils = () => {
@@ -71,14 +72,14 @@ export const useInvoiceUtils = () => {
     if (isLoadingPayables || !address) {
       return { payableInvoices: [], isLoading: true };
     }
-    return { payableInvoices: payableInvoices as Invoice[], isLoading: false };
+    return { payableInvoices: payableInvoices as readonly Invoice[], isLoading: false };
   };
 
   const retrieveReceivableInvoices = () => {
     if (isLoadingReceivables || !address) {
       return { receivableInvoices: [], isLoading: true };
     }
-    return { receivableInvoices: receivableInvoices as Invoice[], isLoading: false };
+    return { receivableInvoices: receivableInvoices as readonly Invoice[], isLoading: false };
   };
 
   const getPayablesAndReceivables = () => {

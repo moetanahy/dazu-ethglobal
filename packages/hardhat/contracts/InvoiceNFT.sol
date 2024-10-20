@@ -24,6 +24,7 @@ contract InvoiceNFT is ERC721, Ownable {
         uint256 dueDate;
         uint256 paidDate;
         InvoiceStatus status;
+        string blobId;
     }
 
     // Mapping from tokenId to Invoice data
@@ -71,7 +72,8 @@ contract InvoiceNFT is ERC721, Ownable {
             creationDate: creationDate,
             dueDate: dueDate,
             paidDate: 0,
-            status: InvoiceStatus.Pending
+            status: InvoiceStatus.Pending,
+            blobId: ""
         });
 
         // Add invoice ID to both payee's and payer's walletInvoices
@@ -79,6 +81,23 @@ contract InvoiceNFT is ERC721, Ownable {
         walletInvoices[_payer].push(newInvoiceId);
 
         return newInvoiceId;
+    }
+
+    // Function to set the blobId for an invoice
+    function setBlobId(uint256 _invoiceId, string memory _blobId) public {
+        Invoice storage invoice = invoices[_invoiceId];
+        
+        // Ensure only the payee (invoice creator) can set the blobId
+        require(invoice.payee == msg.sender, "Only the payee can set the blobId");
+        
+        // Ensure the invoice exists
+        require(invoice.invoiceId != 0, "Invoice does not exist");
+        
+        // Set the blobId
+        invoice.blobId = _blobId;
+        
+        // Optionally, you could emit an event here to log the blobId update
+        // emit BlobIdSet(_invoiceId, _blobId);
     }
 
     // Function to pay an invoice by the payer

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     InvoiceNFT: {
-      address: "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      address: "0x7969c5eD335650692Bc04293B07F5BF2e7A673C0",
       abi: [
         {
           inputs: [
@@ -445,6 +445,11 @@ const deployedContracts = {
                   name: "status",
                   type: "uint8",
                 },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
+                },
               ],
               internalType: "struct InvoiceNFT.Invoice",
               name: "",
@@ -545,6 +550,11 @@ const deployedContracts = {
                   name: "status",
                   type: "uint8",
                 },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
+                },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
               name: "",
@@ -626,6 +636,11 @@ const deployedContracts = {
                   name: "status",
                   type: "uint8",
                 },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
+                },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
               name: "payables",
@@ -692,6 +707,11 @@ const deployedContracts = {
                   internalType: "enum InvoiceNFT.InvoiceStatus",
                   name: "status",
                   type: "uint8",
+                },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
                 },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
@@ -774,6 +794,11 @@ const deployedContracts = {
                   name: "status",
                   type: "uint8",
                 },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
+                },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
               name: "",
@@ -852,6 +877,11 @@ const deployedContracts = {
               internalType: "enum InvoiceNFT.InvoiceStatus",
               name: "status",
               type: "uint8",
+            },
+            {
+              internalType: "string",
+              name: "blobId",
+              type: "string",
             },
           ],
           stateMutability: "view",
@@ -1043,6 +1073,24 @@ const deployedContracts = {
             },
           ],
           name: "setApprovalForAll",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "_blobId",
+              type: "string",
+            },
+          ],
+          name: "setBlobId",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

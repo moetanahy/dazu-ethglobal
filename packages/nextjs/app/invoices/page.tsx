@@ -74,7 +74,7 @@ const ApproveRejectButtons: React.FC<{ invoice: Invoice; onActionComplete: () =>
 const InvoicesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "receivable" | "payable">("all");
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoices, setInvoices] = useState<readonly Invoice[]>([]);
   const [invoiceData, setInvoiceData] = useState({
     payer: "",
     amount: "",
@@ -101,7 +101,7 @@ const InvoicesPage: React.FC = () => {
   }, [address, activeTab]);
 
   const fetchInvoices = () => {
-    let fetchedInvoices: Invoice[] = [];
+    let fetchedInvoices: readonly Invoice[] = [];
     let isLoading = false;
 
     switch (activeTab) {
@@ -115,7 +115,7 @@ const InvoicesPage: React.FC = () => {
         const result = getPayablesAndReceivables();
         console.log("Raw result from getPayablesAndReceivables:", result);
         if (result.payables && result.receivables) {
-          fetchedInvoices = [...result.payables, ...result.receivables];
+          fetchedInvoices = [...result.payables, ...result.receivables] as readonly Invoice[];
         } else {
           console.error("Unexpected format from getPayablesAndReceivables:", result);
           fetchedInvoices = [];
