@@ -101,11 +101,33 @@ export const useInvoiceUtils = () => {
     return { payables: [], receivables: [], isLoading: false };
   };
 
+  const { writeContractAsync: payInvoiceWrite, isPending: isPayingInvoice } = useScaffoldWriteContract("InvoiceNFT");
+
+  const payInvoice = async (invoiceId: bigint, amount: bigint) => {
+    if (!address) {
+      throw new Error("Wallet not connected");
+    }
+
+    try {
+      const tx = await payInvoiceWrite({
+        functionName: "payInvoice",
+        args: [invoiceId],
+        value: amount,
+      });
+      return tx;
+    } catch (error) {
+      console.error("Error paying invoice:", error);
+      throw error;
+    }
+  };
+
   return {
     retrievePayableInvoices,
     retrieveReceivableInvoices,
     getPayablesAndReceivables,
     createInvoice,
     isCreatingInvoice,
+    payInvoice,
+    isPayingInvoice,
   };
 };

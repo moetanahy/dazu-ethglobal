@@ -6,16 +6,25 @@ import { useAccount } from "wagmi";
 import WalletName from "~~/components/WalletName";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
 import { Invoice, useInvoiceUtils } from "~~/utils/InvoiceUtils";
+import { notification } from "~~/utils/scaffold-eth";
 
-const PayButton: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
-  const handlePay = () => {
-    // Implement payment logic here
-    console.log("Pay button clicked for invoice:", invoice);
+const PayButton: React.FC<{ invoice: Invoice; onPaymentComplete: () => void }> = ({ invoice, onPaymentComplete }) => {
+  const { payInvoice, isPayingInvoice } = useInvoiceUtils();
+
+  const handlePay = async () => {
+    try {
+      await payInvoice(invoice.invoiceId!, invoice.amount);
+      notification.success("Payment successful!");
+      onPaymentComplete();
+    } catch (error) {
+      console.error("Payment failed:", error);
+      notification.error("Payment failed. Please try again.");
+    }
   };
 
   return (
-    <button className="btn btn-primary btn-sm" onClick={handlePay}>
-      Pay
+    <button className="btn btn-primary btn-sm" onClick={handlePay} disabled={isPayingInvoice}>
+      {isPayingInvoice ? "Paying..." : "Pay"}
     </button>
   );
 };
@@ -33,7 +42,7 @@ const InvoicesPage: React.FC = () => {
   });
 
   const { address, isConnected } = useAccount();
-  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables, createInvoice } =
+  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables, createInvoice, payInvoice } =
     useInvoiceUtils();
 
   useEffect(() => {
@@ -157,7 +166,7 @@ const InvoicesPage: React.FC = () => {
 
     const actionCell = (
       <td key="action" className="px-4 py-2 border-b">
-        {!invoice.paid && <PayButton invoice={invoice} />}
+        {!invoice.paid && <PayButton invoice={invoice} onPaymentComplete={handlePaymentComplete} />}
       </td>
     );
 
@@ -169,6 +178,10 @@ const InvoicesPage: React.FC = () => {
       default: // "all"
         return [payerCell, payeeCell, ...commonCells];
     }
+  };
+
+  const handlePaymentComplete = () => {
+    fetchInvoices(); // Refresh the invoice list after payment
   };
 
   if (!isConnected) {
