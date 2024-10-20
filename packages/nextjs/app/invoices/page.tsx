@@ -29,6 +29,48 @@ const PayButton: React.FC<{ invoice: Invoice; onPaymentComplete: () => void }> =
   );
 };
 
+const ApproveRejectButtons: React.FC<{ invoice: Invoice; onActionComplete: () => void }> = ({
+  invoice,
+  onActionComplete,
+}) => {
+  const { approveInvoice, rejectInvoice, isApprovingInvoice, isRejectingInvoice } = useInvoiceUtils();
+
+  const handleApprove = async () => {
+    try {
+      await approveInvoice(invoice.invoiceId!);
+      notification.success("Invoice approved successfully!");
+      onActionComplete();
+    } catch (error) {
+      console.error("Approval failed:", error);
+      notification.error("Approval failed. Please try again.");
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await rejectInvoice(invoice.invoiceId!);
+      notification.success("Invoice rejected successfully!");
+      onActionComplete();
+    } catch (error) {
+      console.error("Rejection failed:", error);
+      notification.error("Rejection failed. Please try again.");
+    }
+  };
+
+  if (invoice.status !== 0) return null; // Only show for pending invoices
+
+  return (
+    <>
+      <button className="btn btn-primary btn-sm mr-2" onClick={handleApprove} disabled={isApprovingInvoice}>
+        {isApprovingInvoice ? "Approving..." : "Approve"}
+      </button>
+      <button className="btn btn-secondary btn-sm" onClick={handleReject} disabled={isRejectingInvoice}>
+        {isRejectingInvoice ? "Rejecting..." : "Reject"}
+      </button>
+    </>
+  );
+};
+
 const InvoicesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "receivable" | "payable">("all");
@@ -42,8 +84,15 @@ const InvoicesPage: React.FC = () => {
   });
 
   const { address, isConnected } = useAccount();
-  const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables, createInvoice, payInvoice } =
-    useInvoiceUtils();
+  const {
+    retrievePayableInvoices,
+    retrieveReceivableInvoices,
+    getPayablesAndReceivables,
+    createInvoice,
+    payInvoice,
+    approveInvoice,
+    rejectInvoice,
+  } = useInvoiceUtils();
 
   useEffect(() => {
     if (address) {
@@ -148,7 +197,15 @@ const InvoicesPage: React.FC = () => {
         {new Date(Number(invoice.dueDate) * 1000).toLocaleDateString()}
       </td>,
       <td key="status" className="px-4 py-2 border-b">
-        {invoice.paid ? "Paid" : "Pending"}
+        {invoice.status === 0
+          ? "Pending"
+          : invoice.status === 1
+          ? "Approved"
+          : invoice.status === 2
+          ? "Rejected"
+          : invoice.status === 3
+          ? "Auto-Approved"
+          : "Paid"}
       </td>,
     ];
 
@@ -166,7 +223,12 @@ const InvoicesPage: React.FC = () => {
 
     const actionCell = (
       <td key="action" className="px-4 py-2 border-b">
-        {!invoice.paid && <PayButton invoice={invoice} onPaymentComplete={handlePaymentComplete} />}
+        {invoice.status === 1 && !invoice.paid && (
+          <PayButton invoice={invoice} onPaymentComplete={handlePaymentComplete} />
+        )}
+        {invoice.payer === address && invoice.status === 0 && (
+          <ApproveRejectButtons invoice={invoice} onActionComplete={handlePaymentComplete} />
+        )}
       </td>
     );
 
@@ -176,7 +238,7 @@ const InvoicesPage: React.FC = () => {
       case "payable":
         return [payeeCell, payerCell, ...commonCells, actionCell];
       default: // "all"
-        return [payerCell, payeeCell, ...commonCells];
+        return [payerCell, payeeCell, ...commonCells, actionCell];
     }
   };
 

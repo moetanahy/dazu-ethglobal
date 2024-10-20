@@ -121,6 +121,45 @@ export const useInvoiceUtils = () => {
     }
   };
 
+  const { writeContractAsync: approveInvoiceWrite, isPending: isApprovingInvoice } =
+    useScaffoldWriteContract("InvoiceNFT");
+  const { writeContractAsync: rejectInvoiceWrite, isPending: isRejectingInvoice } =
+    useScaffoldWriteContract("InvoiceNFT");
+
+  const approveInvoice = async (invoiceId: bigint) => {
+    if (!address) {
+      throw new Error("Wallet not connected");
+    }
+
+    try {
+      const tx = await approveInvoiceWrite({
+        functionName: "approveInvoice",
+        args: [invoiceId],
+      });
+      return tx;
+    } catch (error) {
+      console.error("Error approving invoice:", error);
+      throw error;
+    }
+  };
+
+  const rejectInvoice = async (invoiceId: bigint) => {
+    if (!address) {
+      throw new Error("Wallet not connected");
+    }
+
+    try {
+      const tx = await rejectInvoiceWrite({
+        functionName: "rejectInvoice",
+        args: [invoiceId],
+      });
+      return tx;
+    } catch (error) {
+      console.error("Error rejecting invoice:", error);
+      throw error;
+    }
+  };
+
   return {
     retrievePayableInvoices,
     retrieveReceivableInvoices,
@@ -129,5 +168,9 @@ export const useInvoiceUtils = () => {
     isCreatingInvoice,
     payInvoice,
     isPayingInvoice,
+    approveInvoice,
+    rejectInvoice,
+    isApprovingInvoice,
+    isRejectingInvoice,
   };
 };
