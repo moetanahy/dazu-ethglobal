@@ -96,7 +96,7 @@ const InvoicesPage: React.FC = () => {
   };
 
   const renderTableHeader = () => {
-    const commonHeaders = ["Amount", "Currency", "Payment Terms", "Creation Date", "Due Date", "Status"];
+    const commonHeaders = ["ID", "Amount", "Currency", "Payment Terms", "Creation Date", "Due Date", "Status"];
 
     switch (activeTab) {
       case "receivable":
@@ -120,6 +120,9 @@ const InvoicesPage: React.FC = () => {
 
   const renderTableRow = (invoice: Invoice) => {
     const commonCells = [
+      <td key="id" className="px-4 py-2 border-b">
+        {invoice.invoiceId?.toString() || "N/A"}
+      </td>,
       <td key="amount" className="px-4 py-2 border-b">
         {formatAmount(invoice.amount.toString())}
       </td>,
