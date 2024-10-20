@@ -7,6 +7,19 @@ import WalletName from "~~/components/WalletName";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
 import { Invoice, useInvoiceUtils } from "~~/utils/InvoiceUtils";
 
+const PayButton: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
+  const handlePay = () => {
+    // Implement payment logic here
+    console.log("Pay button clicked for invoice:", invoice);
+  };
+
+  return (
+    <button className="btn btn-primary btn-sm" onClick={handlePay}>
+      Pay
+    </button>
+  );
+};
+
 const InvoicesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "receivable" | "payable">("all");
@@ -82,6 +95,79 @@ const InvoicesPage: React.FC = () => {
     }
   };
 
+  const renderTableHeader = () => {
+    const commonHeaders = ["Amount", "Currency", "Payment Terms", "Creation Date", "Due Date", "Status"];
+
+    switch (activeTab) {
+      case "receivable":
+        return ["Payer", "Payee", ...commonHeaders];
+      case "payable":
+        return ["Payee", "Payer", ...commonHeaders, "Actions"];
+      default: // "all"
+        return ["Payer", "Payee", ...commonHeaders];
+    }
+  };
+
+  const formatAmount = (amount: string) => {
+    const parsedAmount = parseFloat(amount) / 1e18;
+    return parsedAmount
+      .toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 18,
+      })
+      .replace(/\.?0+$/, "");
+  };
+
+  const renderTableRow = (invoice: Invoice) => {
+    const commonCells = [
+      <td key="amount" className="px-4 py-2 border-b">
+        {formatAmount(invoice.amount.toString())}
+      </td>,
+      <td key="currency" className="px-4 py-2 border-b">
+        {invoice.currencyCode}
+      </td>,
+      <td key="terms" className="px-4 py-2 border-b">
+        {invoice.paymentTerms.toString()} days
+      </td>,
+      <td key="creation" className="px-4 py-2 border-b">
+        {new Date(Number(invoice.creationDate) * 1000).toLocaleDateString()}
+      </td>,
+      <td key="due" className="px-4 py-2 border-b">
+        {new Date(Number(invoice.dueDate) * 1000).toLocaleDateString()}
+      </td>,
+      <td key="status" className="px-4 py-2 border-b">
+        {invoice.paid ? "Paid" : "Pending"}
+      </td>,
+    ];
+
+    const payerCell = (
+      <td key="payer" className="px-4 py-2 border-b">
+        <WalletName address={invoice.payer} />
+      </td>
+    );
+
+    const payeeCell = (
+      <td key="payee" className="px-4 py-2 border-b">
+        <WalletName address={invoice.payee} />
+      </td>
+    );
+
+    const actionCell = (
+      <td key="action" className="px-4 py-2 border-b">
+        {!invoice.paid && <PayButton invoice={invoice} />}
+      </td>
+    );
+
+    switch (activeTab) {
+      case "receivable":
+        return [payerCell, payeeCell, ...commonCells];
+      case "payable":
+        return [payeeCell, payerCell, ...commonCells, actionCell];
+      default: // "all"
+        return [payerCell, payeeCell, ...commonCells];
+    }
+  };
+
   if (!isConnected) {
     return (
       <div className="container mx-auto mt-10 text-center">
@@ -120,33 +206,17 @@ const InvoicesPage: React.FC = () => {
         <table className="table w-full border-collapse">
           <thead>
             <tr>
-              <th className="px-4 py-2 text-left border-b">Payee</th>
-              <th className="px-4 py-2 text-left border-b">Payer</th>
-              <th className="px-4 py-2 text-left border-b">Amount</th>
-              <th className="px-4 py-2 text-left border-b">Currency</th>
-              <th className="px-4 py-2 text-left border-b">Payment Terms</th>
-              <th className="px-4 py-2 text-left border-b">Creation Date</th>
-              <th className="px-4 py-2 text-left border-b">Due Date</th>
-              <th className="px-4 py-2 text-left border-b">Status</th>
+              {renderTableHeader().map((header, index) => (
+                <th key={index} className="px-4 py-2 text-left border-b">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {invoices.map((invoice, index) => (
               <tr key={index} className="hover:bg-base-200">
-                <td className="px-4 py-2 border-b">
-                  <WalletName address={invoice.payee} />
-                </td>
-                <td className="px-4 py-2 border-b">
-                  <WalletName address={invoice.payer} />
-                </td>
-                <td className="px-4 py-2 border-b">{invoice.amount.toString()}</td>
-                <td className="px-4 py-2 border-b">{invoice.currencyCode}</td>
-                <td className="px-4 py-2 border-b">{invoice.paymentTerms.toString()} days</td>
-                <td className="px-4 py-2 border-b">
-                  {new Date(Number(invoice.creationDate) * 1000).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2 border-b">{new Date(Number(invoice.dueDate) * 1000).toLocaleDateString()}</td>
-                <td className="px-4 py-2 border-b">{invoice.paid ? "Paid" : "Pending"}</td>
+                {renderTableRow(invoice)}
               </tr>
             ))}
           </tbody>

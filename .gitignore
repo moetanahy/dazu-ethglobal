@@ -1,6 +1,8 @@
 # dependencies
 node_modules
 
+packages/hardhat/.env
+
 # yarn
 .yarn/*
 !.yarn/patches
