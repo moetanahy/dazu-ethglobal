@@ -154,7 +154,16 @@ const InvoicesPage: React.FC = () => {
   };
 
   const renderTableHeader = () => {
-    const commonHeaders = ["ID", "Amount", "Currency", "Payment Terms", "Creation Date", "Due Date", "Status"];
+    const commonHeaders = [
+      "ID",
+      "Amount",
+      "Currency",
+      "Terms",
+      "Creation Date",
+      "Due Date",
+      "Status",
+      "Payment Status",
+    ];
 
     switch (activeTab) {
       case "receivable":
@@ -206,6 +215,9 @@ const InvoicesPage: React.FC = () => {
           : invoice.status === 3
           ? "Auto-Approved"
           : "Paid"}
+      </td>,
+      <td key="paymentStatus" className="px-4 py-2 border-b">
+        {invoice.paid ? "Paid" : "Unpaid"}
       </td>,
     ];
 
