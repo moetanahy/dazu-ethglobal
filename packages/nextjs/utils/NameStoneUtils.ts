@@ -4,7 +4,9 @@ import axios from "axios";
 class NameStoneUtils {
   private static DOMAIN = "dazupay.eth";
   private static API_KEY = "037f4da9-82e7-43e1-a338-46c40d1fd715";
+  //   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
+  private static BASE_NO_CORS = "https://namestone.xyz/api/public_v1/set-name";
   private static nameCache: { [address: string]: string } = {};
   private static debug = true;
   private static debugArray: { [address: string]: string } = {
@@ -31,12 +33,14 @@ class NameStoneUtils {
         `${this.BASE_URL}/set-name`,
         {
           domain: this.DOMAIN,
-          name: name,
+          name: name.trim(),
           address: address,
         },
         {
           headers: {
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
+            // "X-API-Key": this.API_KEY,
+            "X-Requested-With": "XMLHttpRequest",
             Authorization: this.API_KEY,
           },
         },
@@ -52,6 +56,48 @@ class NameStoneUtils {
       return false;
     } catch (error) {
       console.error("Error setting name:", error);
+      return false;
+    }
+  }
+
+  public static async claimName(address: string, name: string): Promise<boolean> {
+    try {
+      //   const { address } = useAccount();
+      //   const addressAsString = address as string;
+      //   const addressAsString = address.addre;
+      console.log(
+        "claimName about to be called with ",
+        name,
+        " for address ",
+        address,
+        "and with domain ",
+        this.DOMAIN,
+      );
+      const response = await axios.post(
+        `${this.BASE_URL}/claim-name`,
+        {
+          domain: this.DOMAIN,
+          name: name,
+          address: address,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: this.API_KEY,
+          },
+        },
+      );
+      console.log("claimName called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
+
+      console.log("response", response);
+
+      if (response.status === 200) {
+        this.nameCache[address] = name;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error claiming name:", error);
       return false;
     }
   }
