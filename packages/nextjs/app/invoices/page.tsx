@@ -173,7 +173,7 @@ const InvoicesPage: React.FC = () => {
       case "payable":
         return ["Payee", "Payer", ...commonHeaders, "Actions"];
       default: // "all"
-        return ["Payer", "Payee", ...commonHeaders];
+        return ["Payer", "Payee", ...commonHeaders, "Actions"];
     }
   };
 
