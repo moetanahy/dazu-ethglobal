@@ -23,6 +23,9 @@ class NameStoneUtils {
    */
   public static async setName(address: string, name: string): Promise<boolean> {
     try {
+      //   const { address } = useAccount();
+      //   const addressAsString = address as string;
+      //   const addressAsString = address.addre;
       const response = await axios.post(
         `${this.BASE_URL}/set-name`,
         {
@@ -37,6 +40,8 @@ class NameStoneUtils {
           },
         },
       );
+      console.log("setName called with ", name, " for address ", address);
+      console.log("response", response);
 
       if (response.status === 200) {
         this.nameCache[address] = name;
