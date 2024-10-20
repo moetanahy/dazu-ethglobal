@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useAccount } from "wagmi";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import WalletName from "~~/components/WalletName";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
 import { Invoice, useInvoiceUtils } from "~~/utils/InvoiceUtils";
+import { WalrusUtils } from "~~/utils/WalrusUtils";
 import { notification } from "~~/utils/scaffold-eth";
 
 const PayButton: React.FC<{ invoice: Invoice; onPaymentComplete: () => void }> = ({ invoice, onPaymentComplete }) => {
@@ -114,12 +116,12 @@ const InvoicesPage: React.FC = () => {
       case "all":
         const result = getPayablesAndReceivables();
         console.log("Raw result from getPayablesAndReceivables:", result);
-        if (result.payables && result.receivables) {
-          fetchedInvoices = [...result.payables, ...result.receivables] as readonly Invoice[];
-        } else {
-          console.error("Unexpected format from getPayablesAndReceivables:", result);
-          fetchedInvoices = [];
-        }
+        // if (result.payables && result.receivables) {
+        fetchedInvoices = [...result.payables, ...result.receivables] as readonly Invoice[];
+        // } else {
+        // console.error("Unexpected format from getPayablesAndReceivables:", result);
+        // fetchedInvoices = [];
+        // }
         isLoading = result.isLoading;
         break;
     }
