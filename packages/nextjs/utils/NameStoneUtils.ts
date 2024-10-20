@@ -5,6 +5,12 @@ class NameStoneUtils {
   private static DOMAIN = "dazupay.eth";
   private static API_KEY = "037f4da9-82e7-43e1-a338-46c40d1fd715";
   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
+  private static nameCache: { [address: string]: string } = {};
+  private static debug = true;
+  private static debugArray: { [address: string]: string } = {
+    "0xf75F4b46a43baF67e3c4DC27b89472a54E4f3aBE": "user1",
+    "0xCB9b60B895fB14c940A8352289C5374829300548": "user2",
+  };
 
   //   private static NAME_STONE = new NameStone("037f4da9-82e7-43e1-a338-46c40d1fd715");
 
@@ -31,7 +37,11 @@ class NameStoneUtils {
         },
       );
 
-      return response.status === 200;
+      if (response.status === 200) {
+        this.nameCache[address] = name;
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error("Error setting name:", error);
       return false;
@@ -44,6 +54,14 @@ class NameStoneUtils {
    * @returns Promise<string | null> The user's name if found, null otherwise
    */
   public static async getName(address: string): Promise<string | null> {
+    if (this.debug && this.debugArray[address]) {
+      return this.debugArray[address];
+    }
+
+    if (this.nameCache[address]) {
+      return this.nameCache[address];
+    }
+
     try {
       const response = await axios.get(`${this.BASE_URL}/get-names`, {
         params: {
@@ -57,6 +75,7 @@ class NameStoneUtils {
       });
 
       if (response.status === 200 && response.data.name) {
+        this.nameCache[address] = response.data.name;
         return response.data.name;
       }
 

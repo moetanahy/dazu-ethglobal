@@ -10,7 +10,9 @@ const WalletName: React.FC<WalletNameProps> = ({ address }) => {
 
   useEffect(() => {
     const fetchName = async () => {
+      console.log("About to get name for: " + address);
       const name = await NameStoneUtils.getName(address);
+      console.log("Name found is: " + name);
       if (name) {
         setDisplayName(name);
       } else {
