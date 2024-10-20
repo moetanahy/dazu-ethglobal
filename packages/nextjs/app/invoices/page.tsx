@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useAccount } from "wagmi";
 import WalletName from "~~/components/WalletName";
 import CreateInvoiceModal from "~~/components/invoices/CreateInvoiceModal";
@@ -18,7 +19,7 @@ const InvoicesPage: React.FC = () => {
     description: "",
   });
 
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { retrievePayableInvoices, retrieveReceivableInvoices, getPayablesAndReceivables, createInvoice } =
     useInvoiceUtils();
 
@@ -80,6 +81,16 @@ const InvoicesPage: React.FC = () => {
       // Handle error (e.g., show error message)
     }
   };
+
+  if (!isConnected) {
+    return (
+      <div className="container mx-auto mt-10 text-center">
+        <h1 className="text-4xl font-bold mb-6">Invoices</h1>
+        <p className="mb-4">Please connect your wallet to view and manage invoices.</p>
+        {/* <DynamicWidget /> */}
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto mt-10">
