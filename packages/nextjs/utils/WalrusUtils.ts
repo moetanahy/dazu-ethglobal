@@ -2,9 +2,8 @@ import axios from "axios";
 
 export class WalrusUtils {
   // Constants for public publisher and aggregator
-  private static readonly PUBLIC_PUBLISHER =
-    "https://cors-anywhere.herokuapp.com/https://walrus-testnet-publisher.nodes.guru";
-  private static readonly PUBLIC_AGGREGATOR = "https://cors-anywhere.herokuapp.com/http://walrus.krates.ai:9000";
+  private static readonly PUBLIC_PUBLISHER = "https://walrus-testnet-publisher.nodes.guru";
+  private static readonly PUBLIC_AGGREGATOR = "http://walrus.krates.ai:9000";
 
   /**
    * Stores a file in a blob using the Walrus publisher API.

@@ -4,9 +4,7 @@ import axios from "axios";
 class NameStoneUtils {
   private static DOMAIN = "dazupay.eth";
   private static API_KEY = "037f4da9-82e7-43e1-a338-46c40d1fd715";
-  //   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
-  private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
-  //   private static BASE_URL = "https://namestone.xyz/api/public_v1";
+  private static BASE_URL = "/api/namestone";
   private static BASE_NO_CORS = "https://namestone.xyz/api/public_v1/set-name";
   private static nameCache: { [address: string]: string } = {};
   private static debug = false;
@@ -30,22 +28,11 @@ class NameStoneUtils {
       //   const addressAsString = address as string;
       //   const addressAsString = address.addre;
       console.log("setName about to be called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
-      const response = await axios.post(
-        `${this.BASE_URL}/set-name`,
-        {
-          domain: this.DOMAIN,
-          name: name.trim(),
-          address: address,
-        },
-        {
-          headers: {
-            // "Content-Type": "application/json",
-            // "X-API-Key": this.API_KEY,
-            "X-Requested-With": "XMLHttpRequest",
-            Authorization: this.API_KEY,
-          },
-        },
-      );
+      const response = await axios.post(`${this.BASE_URL}/set-name`, {
+        domain: this.DOMAIN,
+        name: name.trim(),
+        address: address,
+      });
       console.log("setName called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
 
       console.log("response", response);
@@ -74,20 +61,11 @@ class NameStoneUtils {
         "and with domain ",
         this.DOMAIN,
       );
-      const response = await axios.post(
-        `${this.BASE_URL}/claim-name`,
-        {
-          domain: this.DOMAIN,
-          name: name,
-          address: address,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: this.API_KEY,
-          },
-        },
-      );
+      const response = await axios.post(`${this.BASE_URL}/claim-name`, {
+        domain: this.DOMAIN,
+        name: name,
+        address: address,
+      });
       console.log("claimName called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
 
       console.log("response", response);
@@ -121,14 +99,10 @@ class NameStoneUtils {
     }
 
     try {
-      const response = await axios.get(`${this.BASE_URL}/get-names`, {
+      const response = await axios.get(`${this.BASE_URL}`, {
         params: {
           domain: this.DOMAIN,
           address: address,
-        },
-        headers: {
-          "X-API-Key": this.API_KEY,
-          Authorization: this.API_KEY,
         },
       });
 
@@ -150,13 +124,9 @@ class NameStoneUtils {
     console.log("getAllNames");
 
     try {
-      const response = await axios.get(`${this.BASE_URL}/get-names`, {
+      const response = await axios.get(`${this.BASE_URL}`, {
         params: {
           domain: this.DOMAIN,
-        },
-        headers: {
-          "X-API-Key": this.API_KEY,
-          Authorization: this.API_KEY,
         },
       });
 
