@@ -144,6 +144,34 @@ class NameStoneUtils {
       return null;
     }
   }
+
+  public static async getAllNames(): Promise<string | null> {
+    console.log("getAllNames");
+
+    try {
+      const response = await axios.get(`${this.BASE_URL}/get-names`, {
+        params: {
+          domain: this.DOMAIN,
+        },
+        headers: {
+          "X-API-Key": this.API_KEY,
+          Authorization: this.API_KEY,
+        },
+      });
+
+      console.log("response", response);
+
+      if (response.status === 200) {
+        console.log("response.data", response.data);
+        return response.data;
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error getting name:", error);
+      return null;
+    }
+  }
 }
 
 export default NameStoneUtils;
