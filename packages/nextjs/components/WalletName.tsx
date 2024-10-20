@@ -10,7 +10,7 @@ const WalletName: React.FC<WalletNameProps> = ({ address }) => {
 
   useEffect(() => {
     const fetchName = async () => {
-      const name = await NameStoneUtils.searchName(address);
+      const name = await NameStoneUtils.getName(address);
       if (name) {
         setDisplayName(name);
       } else {
@@ -21,7 +21,20 @@ const WalletName: React.FC<WalletNameProps> = ({ address }) => {
     fetchName();
   }, [address]);
 
-  return <div className="wallet-name">{displayName}</div>;
+  return (
+    <div
+      className="wallet-name"
+      style={{
+        padding: "8px",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        display: "inline-block",
+        fontFamily: "monospace",
+      }}
+    >
+      {displayName}
+    </div>
+  );
 };
 
 export default WalletName;

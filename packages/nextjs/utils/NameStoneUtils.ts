@@ -39,11 +39,11 @@ class NameStoneUtils {
   }
 
   /**
-   * Searches for a user's name by their wallet address
+   * Gets a user's name by their wallet address
    * @param address The wallet address to search for
    * @returns Promise<string | null> The user's name if found, null otherwise
    */
-  public static async searchName(address: string): Promise<string | null> {
+  public static async getName(address: string): Promise<string | null> {
     try {
       const response = await axios.get(`${this.BASE_URL}/get-names`, {
         params: {
@@ -62,7 +62,7 @@ class NameStoneUtils {
 
       return null;
     } catch (error) {
-      console.error("Error searching name:", error);
+      console.error("Error getting name:", error);
       return null;
     }
   }
