@@ -6,6 +6,7 @@ class NameStoneUtils {
   private static API_KEY = "037f4da9-82e7-43e1-a338-46c40d1fd715";
   //   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
+  //   private static BASE_URL = "https://namestone.xyz/api/public_v1";
   private static BASE_NO_CORS = "https://namestone.xyz/api/public_v1/set-name";
   private static nameCache: { [address: string]: string } = {};
   private static debug = false;

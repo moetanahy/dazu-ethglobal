@@ -2,6 +2,10 @@
 
 The goal of this project is to create a business invoicing platform that allows users to create, send, and manage invoices as a business on Web3.
 
+## Tag Line
+
+The Decentralized Business Invoicing Platform
+
 ## Tech Stack Plan
 
 - IDE/Plumbing
@@ -9,22 +13,16 @@ The goal of this project is to create a business invoicing platform that allows 
 	- Hardhat - **USED**
 - Dynamic for Wallets? (or am I using the Circle Wallet SDK)
 	- https://www.dynamic.xyz/ - **INTEGRATED**
-- ENS for name service
+- ENS for name service - **INTEGRATED**
 	- https://ens.domains/
 	- https://docs.ens.domains/web/subdomains
 	- For Sure
-- Smart contracts on Polygon Blockchain
-- Circle for USDc, EURc
-- Unlimit for on/off ramps
-- Delv (Hyperdrive) for the AMM
-- Walrus (for data storage)
-- Chronicle for real exchange rates
-
-## Smart Contracts
-
-I need smart contracts for:
-* InvoiceManager
-* 
+- Smart contracts on Polygon Blockchain - **INTEGRATED**
+- Walrus (for data storage)  **INTEGRATED**
+- Circle for USDc, EURc - **PARTIALLY INTEGRATED**
+- Unlimit for on/off ramps - **NOT COMPLETE**
+- Delv (Hyperdrive) for the AMM -  **NOT COMPLETE**
+- Chronicle for real exchange rates - **NOT COMPLETE**
 
 
 ## Quickstart
@@ -34,7 +32,7 @@ To get started with Scaffold-ETH 2, follow the steps below:
 1. Install dependencies if it was skipped in CLI:
 
 ```
-cd my-dapp-example
+cd dazu-ethglobal
 yarn install
 ```
 
@@ -44,15 +42,11 @@ yarn install
 yarn chain
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
+3. On a second terminal, deploy the test contract to the test environment
 
 ```
 yarn deploy
 ```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
 
 4. On a third terminal, start your NextJS app:
 
@@ -60,14 +54,13 @@ This command deploys a test smart contract to the local network. The contract is
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+## Deploy on Polygon
 
-Run smart contract test with `yarn hardhat:test`
+Used instructions from here - https://docs.scaffoldeth.io/deploying/deploy-smart-contracts
 
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
-
+```
+yarn deploy --network polyAmoly
+```
 
 ## Deployment
 
