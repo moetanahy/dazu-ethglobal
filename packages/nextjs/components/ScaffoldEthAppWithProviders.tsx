@@ -42,6 +42,26 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 /* eslint-disable no-unused-vars */
 
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
 const evmNetworks = [
   ...scaffoldConfig.targetNetworks.map(chain => ({
     blockExplorerUrls: chain.blockExplorers
@@ -105,6 +125,17 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
         walletConnectors: [EthereumWalletConnectors],
         overrides: {
           evmNetworks: networks => mergeNetworks(evmNetworks, networks),
+        },
+        events: {
+          onAuthSuccess: args => {
+            console.log("onAuthSuccess was called", args);
+            // you can get the jwt by calling the getAuthToken helper function
+            // const authToken = getAuthToken();
+            console.log("authToken updated");
+          },
+          onUserProfileUpdate: user => {
+            console.log("onUserProfileUpdate was called", user);
+          },
         },
       }}
     >
