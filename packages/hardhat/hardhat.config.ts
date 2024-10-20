@@ -77,6 +77,11 @@ const config: HardhatUserConfig = {
       url: `https://polygon-rpc.com`,
       accounts: [deployerPrivateKey],
     },
+    polygonAmoy: {
+      url: `https://polygon-amoy.blockpi.network/v1/rpc/public`,
+      accounts: [deployerPrivateKey],
+      // chainId: 80002,
+    },
     polygonMumbai: {
       url: `https://rpc.ankr.com/polygon_mumbai`,
       accounts: [deployerPrivateKey],
@@ -125,11 +130,31 @@ const config: HardhatUserConfig = {
   // configuration for harhdat-verify plugin
   etherscan: {
     apiKey: `${etherscanApiKey}`,
+    // apiKey: process.env.POLYGONSCAN_API_KEY,
+    // apiKey: {
+    //   // polygon: process.env.POLYGONSCAN_API_KEY!, // Non-null assertion
+    //   polygonAmoy: "7SYDGX2HH6ZCNRSEF5SP25A1NT7NYBXIKK"
+    // },
+    // customChains: [
+    //   {
+    //     network: "polygonAmoy",
+    //     chainId: 80002,
+    //     urls: {
+    //       apiURL: "https://polygon.api.onfinality.io/public",
+    //       browserURL: "https://www.oklink.com/amoy"
+    //     }
+    //   }
+    // ]
   },
   // configuration for etherscan-verify from hardhat-deploy plugin
   verify: {
     etherscan: {
       apiKey: `${etherscanApiKey}`,
+      // apiKey: "7SYDGX2HH6ZCNRSEF5SP25A1NT7NYBXIKK",
+      // apiKey: {
+      // polygon: process.env.POLYGONSCAN_API_KEY!, // Non-null assertion
+      // polygonAmoy: process.env.POLYGONSCAN_API_KEY || '', // Default to empty string
+      // },
     },
   },
   sourcify: {
