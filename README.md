@@ -73,4 +73,5 @@ deploying "InvoiceNFT" (tx: 0x1a2b1ab7974ac867b078b09b26d26102e8b49390736519eb58
 
 Public key: 0x4C3fbd96888A2A6912eF2db5f1747A2C59b7821C
 
+https://chainlist.org/?search=usdc
 
