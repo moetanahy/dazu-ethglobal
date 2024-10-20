@@ -77,13 +77,18 @@ const InvoicesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "receivable" | "payable">("all");
   const [invoices, setInvoices] = useState<readonly Invoice[]>([]);
-  const [invoiceData, setInvoiceData] = useState({
+
+  // Move this outside the component to avoid recreating it on every render
+  const initialInvoiceData = {
     payer: "",
     amount: "",
     currency: "USD",
     paymentTerms: 30,
     description: "",
-  });
+    invoiceFile: null,
+  };
+
+  const [invoiceData, setInvoiceData] = useState(initialInvoiceData);
 
   const { address, isConnected } = useAccount();
   const {
@@ -148,6 +153,7 @@ const InvoicesPage: React.FC = () => {
         invoiceData.paymentTerms,
       );
       setIsModalOpen(false);
+      setInvoiceData(initialInvoiceData); // Reset the form data after successful submission
       fetchInvoices(); // Refresh the invoice list
     } catch (error) {
       console.error("Failed to create invoice:", error);
@@ -317,7 +323,10 @@ const InvoicesPage: React.FC = () => {
 
       <CreateInvoiceModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setInvoiceData(initialInvoiceData); // Reset the form data when closing the modal
+        }}
         onSubmit={handleSubmit}
         onChange={handleInputChange}
         initialData={invoiceData}

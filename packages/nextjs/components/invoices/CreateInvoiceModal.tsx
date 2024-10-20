@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { groupedCurrencies } from "~~/utils/CurrencyUtils";
 import { paymentTerms } from "~~/utils/PaymentTermsUtils";
 import { WalrusUtils } from "~~/utils/WalrusUtils";
@@ -28,6 +28,15 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
   const [invoiceData, setInvoiceData] = useState(initialData);
   const [payerError, setPayerError] = useState<string>("");
   const [fileError, setFileError] = useState<string>("");
+
+  // Add this useEffect hook to reset the form when the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setInvoiceData(initialData);
+      setPayerError("");
+      setFileError("");
+    }
+  }, [isOpen, initialData]);
 
   if (!isOpen) return null;
 
@@ -73,8 +82,6 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
           const fileContent = await invoiceData.invoiceFile.arrayBuffer();
           const blobId = await WalrusUtils.store(new Uint8Array(fileContent));
           console.log("File uploaded to Walrus. Blob ID:", blobId);
-          // You might want to add the blobId to the invoice data here
-          // setInvoiceData(prev => ({ ...prev, invoiceBlobId: blobId }));
         } catch (error) {
           console.error("Error uploading file to Walrus:", error);
           setFileError("Failed to upload file. Please try again.");
@@ -82,6 +89,10 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
         }
       }
       await onSubmit(e);
+      // Reset the form after successful submission
+      setInvoiceData(initialData);
+      setPayerError("");
+      setFileError("");
     }
   };
 
