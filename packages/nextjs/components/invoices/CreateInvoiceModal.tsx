@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { groupedCurrencies } from "~~/utils/CurrencyUtils";
 import { paymentTerms } from "~~/utils/PaymentTermsUtils";
+import { WalrusUtils } from "~~/utils/WalrusUtils";
 
 interface CreateInvoiceModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface CreateInvoiceModalProps {
     currency: string;
     paymentTerms: number;
     description: string;
+    invoiceFile?: File | null;
   };
 }
 
@@ -25,7 +27,7 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
 }) => {
   const [invoiceData, setInvoiceData] = useState(initialData);
   const [payerError, setPayerError] = useState<string>("");
-  //   const { createInvoice } = useInvoiceUtils();
+  const [fileError, setFileError] = useState<string>("");
 
   if (!isOpen) return null;
 
@@ -51,9 +53,34 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
     onChange(e);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type === "application/pdf") {
+        setInvoiceData(prev => ({ ...prev, invoiceFile: file }));
+        setFileError("");
+      } else {
+        setFileError("Please upload a PDF file");
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!payerError) {
+    if (!payerError && !fileError) {
+      if (invoiceData.invoiceFile) {
+        try {
+          const fileContent = await invoiceData.invoiceFile.arrayBuffer();
+          const blobId = await WalrusUtils.store(new Uint8Array(fileContent));
+          console.log("File uploaded to Walrus. Blob ID:", blobId);
+          // You might want to add the blobId to the invoice data here
+          // setInvoiceData(prev => ({ ...prev, invoiceBlobId: blobId }));
+        } catch (error) {
+          console.error("Error uploading file to Walrus:", error);
+          setFileError("Failed to upload file. Please try again.");
+          return;
+        }
+      }
       await onSubmit(e);
     }
   };
@@ -136,11 +163,21 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({
               required
             />
           </div>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700">Upload Invoice PDF (Optional)</label>
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="w-full p-2 border rounded text-gray-800 bg-white"
+            />
+            {fileError && <p className="text-red-500 text-sm mt-1">{fileError}</p>}
+          </div>
           <div className="flex justify-end">
             <button type="button" className="btn btn-secondary mr-2" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={!!payerError}>
+            <button type="submit" className="btn btn-primary" disabled={!!payerError || !!fileError}>
               Create Invoice
             </button>
           </div>

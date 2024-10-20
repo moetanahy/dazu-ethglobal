@@ -2,8 +2,9 @@ import axios from "axios";
 
 export class WalrusUtils {
   // Constants for public publisher and aggregator
-  private static readonly PUBLIC_PUBLISHER = "https://walrus-publish-testnet.chainode.tech:9003";
-  private static readonly PUBLIC_AGGREGATOR = "http://walrus.krates.ai:9000";
+  private static readonly PUBLIC_PUBLISHER =
+    "https://cors-anywhere.herokuapp.com/https://walrus-testnet-publisher.nodes.guru";
+  private static readonly PUBLIC_AGGREGATOR = "https://cors-anywhere.herokuapp.com/http://walrus.krates.ai:9000";
 
   /**
    * Stores a file in a blob using the Walrus publisher API.
@@ -16,8 +17,9 @@ export class WalrusUtils {
         headers: { "Content-Type": "application/octet-stream" },
       });
 
-      if (response.status === 200 && response.data.id) {
-        return response.data.id;
+      if (response.status === 200) {
+        const blobId = response.data.alreadyCertified?.blobId || response.data.newlyCreated?.blobObject?.id || null;
+        return blobId;
       } else {
         throw new Error("Failed to store blob: Invalid response");
       }
