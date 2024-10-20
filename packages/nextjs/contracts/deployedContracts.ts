@@ -1365,7 +1365,7 @@ const deployedContracts = {
   },
   80002: {
     InvoiceNFT: {
-      address: "0x0b4db15DA0157937A0D06a3c6772D31726fBdF7F",
+      address: "0x5496fAdF693cda845AAAc626B210D95A2141208E",
       abi: [
         {
           inputs: [
@@ -1744,6 +1744,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -1797,6 +1802,11 @@ const deployedContracts = {
                   internalType: "enum InvoiceNFT.InvoiceStatus",
                   name: "status",
                   type: "uint8",
+                },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
                 },
               ],
               internalType: "struct InvoiceNFT.Invoice",
@@ -1839,6 +1849,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -1892,6 +1907,11 @@ const deployedContracts = {
                   internalType: "enum InvoiceNFT.InvoiceStatus",
                   name: "status",
                   type: "uint8",
+                },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
                 },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
@@ -1915,6 +1935,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -1968,6 +1993,11 @@ const deployedContracts = {
                   internalType: "enum InvoiceNFT.InvoiceStatus",
                   name: "status",
                   type: "uint8",
+                },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
                 },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
@@ -1977,6 +2007,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -2030,6 +2065,11 @@ const deployedContracts = {
                   internalType: "enum InvoiceNFT.InvoiceStatus",
                   name: "status",
                   type: "uint8",
+                },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
                 },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
@@ -2053,6 +2093,11 @@ const deployedContracts = {
             {
               components: [
                 {
+                  internalType: "uint256",
+                  name: "invoiceId",
+                  type: "uint256",
+                },
+                {
                   internalType: "address payable",
                   name: "payee",
                   type: "address",
@@ -2107,6 +2152,11 @@ const deployedContracts = {
                   name: "status",
                   type: "uint8",
                 },
+                {
+                  internalType: "string",
+                  name: "blobId",
+                  type: "string",
+                },
               ],
               internalType: "struct InvoiceNFT.Invoice[]",
               name: "",
@@ -2126,6 +2176,11 @@ const deployedContracts = {
           ],
           name: "invoices",
           outputs: [
+            {
+              internalType: "uint256",
+              name: "invoiceId",
+              type: "uint256",
+            },
             {
               internalType: "address payable",
               name: "payee",
@@ -2180,6 +2235,11 @@ const deployedContracts = {
               internalType: "enum InvoiceNFT.InvoiceStatus",
               name: "status",
               type: "uint8",
+            },
+            {
+              internalType: "string",
+              name: "blobId",
+              type: "string",
             },
           ],
           stateMutability: "view",
@@ -2371,6 +2431,24 @@ const deployedContracts = {
             },
           ],
           name: "setApprovalForAll",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_invoiceId",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "_blobId",
+              type: "string",
+            },
+          ],
+          name: "setBlobId",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

@@ -59,12 +59,18 @@ yarn start
 Used instructions from here - https://docs.scaffoldeth.io/deploying/deploy-smart-contracts
 
 ```
-yarn deploy --network polyAmoly
+yarn deploy --network network_name
+yarn deploy --network polygonAmoy
 ```
 
-## Deployment
+## Importatn Keys
 
-Polygon deployer on Amoy
+reusing "YourContract" at 0xFc21d7d1Adf24c64e0827a0Ed6f8E7Cec75c9722
+deploying "InvoiceNFT" (tx: 0x1a2b1ab7974ac867b078b09b26d26102e8b49390736519eb5871016c13f9e29b)...: deployed at 0x5496fAdF693cda845AAAc626B210D95A2141208E with 3052278 gas
+👋 Initial greeting: Building Unstoppable Apps!!!
+📄 InvoiceNFT deployed at: undefined
+📝 Updated TypeScript contract definition file on ../nextjs/contracts/deployedContracts.ts
 
 Public key: 0x4C3fbd96888A2A6912eF2db5f1747A2C59b7821C
+
 
