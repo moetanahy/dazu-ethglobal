@@ -8,7 +8,7 @@ class NameStoneUtils {
   private static BASE_URL = "https://cors-anywhere.herokuapp.com/https://namestone.xyz/api/public_v1";
   private static BASE_NO_CORS = "https://namestone.xyz/api/public_v1/set-name";
   private static nameCache: { [address: string]: string } = {};
-  private static debug = true;
+  private static debug = false;
   private static debugArray: { [address: string]: string } = {
     "0xf75F4b46a43baF67e3c4DC27b89472a54E4f3aBE": "user1",
     "0xCB9b60B895fB14c940A8352289C5374829300548": "user2",
@@ -112,7 +112,10 @@ class NameStoneUtils {
       return this.debugArray[address];
     }
 
+    console.log("getName called with address ", address);
+
     if (this.nameCache[address]) {
+      console.log("is in namecache", this.nameCache[address]);
       return this.nameCache[address];
     }
 
@@ -128,9 +131,11 @@ class NameStoneUtils {
         },
       });
 
-      if (response.status === 200 && response.data.name) {
-        this.nameCache[address] = response.data.name;
-        return response.data.name;
+      console.log("response", response);
+
+      if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
+        this.nameCache[address] = response.data[response.data.length - 1].name;
+        return response.data[0].name;
       }
 
       return null;

@@ -59,6 +59,26 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 /* eslint-disable no-unused-vars */
 
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable no-unused-vars */
+
 const evmNetworks = [
   ...scaffoldConfig.targetNetworks.map(chain => ({
     blockExplorerUrls: chain.blockExplorers
@@ -124,6 +144,9 @@ const ScaffoldEthAppWithProviders = ({ children }: { children: React.ReactNode }
             onAuthSuccess: args => {
               console.log("onAuthSuccess was called", args);
               console.log("authToken updated");
+              if (args.user && args.user.username) {
+                setUsername(args.user.username);
+              }
             },
             onUserProfileUpdate: user => {
               console.log("onUserProfileUpdate was called", user.username);
