@@ -26,6 +26,7 @@ class NameStoneUtils {
       //   const { address } = useAccount();
       //   const addressAsString = address as string;
       //   const addressAsString = address.addre;
+      console.log("setName about to be called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
       const response = await axios.post(
         `${this.BASE_URL}/set-name`,
         {
@@ -40,7 +41,8 @@ class NameStoneUtils {
           },
         },
       );
-      console.log("setName called with ", name, " for address ", address);
+      console.log("setName called with ", name, " for address ", address, "and with domain ", this.DOMAIN);
+
       console.log("response", response);
 
       if (response.status === 200) {
